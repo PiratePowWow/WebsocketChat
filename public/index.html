@@ -22,7 +22,7 @@
                 stompClient.subscribe('/topic/greetings', function(greeting) {
                     showGreeting(JSON.parse(greeting.body).content);
                 });
-                stompClient.subscribe('/topic/scoreboard', function(score) {
+                stompClient.subscribe('/topic/scoreboard/', function(score) {
                     showPlayerList(JSON.parse(score.body));
                 });
             });
@@ -73,8 +73,9 @@
                 name: name,
                 score: score
             }
-            stompClient.send('/app/scoreboard', {}, JSON.stringify(player));
+            stompClient.send('/app/scoreboard/', {}, JSON.stringify(player));
         }
+
 
     </script>
 </head>

@@ -5,6 +5,7 @@ import com.theironyard.pojos.HelloMessage;
 import com.theironyard.pojos.Player;
 import com.theironyard.services.IronMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,11 @@ public class WebsocketChatController {
 
     ArrayList<Player> players = new ArrayList<Player>();
 
-    @MessageMapping("/scoreboard")
-    @SendTo("/topic/scoreboard")
-    public ArrayList<Player> scoreboard(Player player){
+//    @SendTo("/topic/scoreboard")
+
+
+    @MessageMapping("/scoreboard/{roomCode}")
+    public ArrayList<Player> scoreboard(@DestinationVariable String roomCode, Player player){
         players.add(player);
         return new ArrayList<Player>(players);
     }
