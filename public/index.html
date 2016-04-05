@@ -22,6 +22,9 @@
                 stompClient.subscribe('/topic/greetings', function(greeting) {
                     showGreeting(JSON.parse(greeting.body).content);
                 });
+                stompClient.subscribe('/topic/scoreboard', function(score) {
+                    showPlayerList(JSON.parse(score.body));
+                });
             });
         }
 
@@ -31,6 +34,23 @@
             }
             setConnected(false);
             console.log("Disconnected");
+        }
+
+        function showPlayerList(playerList) {
+            var playersDomElement = document.getElementById('players');
+            var playerListDomElement = document.getElementById('playerList');
+            if(playerListDomElement) {
+                playersDomElement.removeChild(playerListDomElement);
+            }
+            var ul = document.createElement('ul');
+            ul.setAttribute("id", "playerList");
+            playersDomElement.appendChild(ul);
+            for (i = 0; i < playerList.length; i++) {
+                var li = document.createElement('li');
+                var textnode = document.createTextNode(playerList[i].name);
+                li.appendChild(textnode);
+                ul.appendChild(li);
+            }
         }
 
         function sendName() {
@@ -45,6 +65,17 @@
             p.appendChild(document.createTextNode(message));
             response.appendChild(p);
         }
+
+        function sendPlayer() {
+            var name = document.getElementById('player').value;
+            var score = document.getElementById('score').value;
+            var player = {
+                name: name,
+                score: score
+            }
+            stompClient.send('/app/scoreboard', {}, JSON.stringify(player));
+        }
+
     </script>
 </head>
 <body onload="disconnect()">
@@ -58,6 +89,14 @@
         <label>What is your name?</label><input type="text" id="name"/>
         <button id="sendName" onclick="sendName();">Send</button>
         <p id="response"></p>
+    </div>
+    <div>
+        <input type="text" id="player"/>
+        <input type="number" id="score"/>
+        <button onclick="sendPlayer()">Create Player</button>
+    </div>
+    <div id="players">
+
     </div>
 </div>
 </body>
